@@ -25,7 +25,7 @@ public class StudentController {
     }
 
     // create student
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CreateStudentResponseDto> createStudent(
           @Valid @RequestBody CreateStudentRequestDTO createStudentRequestDTO) {
 
@@ -37,12 +37,10 @@ public class StudentController {
 
     // read one student
 
-    @GetMapping("/get")
-    public ResponseEntity<CreateStudentResponseDto> getStudent(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<CreateStudentResponseDto> getStudent(@PathVariable Long id) {
         CreateStudentResponseDto  studentResp = studentServices.getStudent(id);
-        if(studentResp == null) {
-            return ResponseEntity.notFound().build();
-        }
+
         return ResponseEntity.ok(studentResp);
     }
 
@@ -50,20 +48,19 @@ public class StudentController {
     @GetMapping("/getAll")
     public ResponseEntity<List<CreateStudentResponseDto>> getAllStudent() {
       List  <CreateStudentResponseDto> studentList = studentServices.getAllStudent();
-        if(studentList== null) {
-            return ResponseEntity.notFound().build();
-        }
+
         return ResponseEntity.ok(studentList);
     }
 
 
     // update  student
     @PutMapping("/update")
-    public ResponseEntity<UpdateStudentRequestDto> updateStudent(@RequestParam Long id, @RequestBody UpdateStudentRequestDto studentReq) {
-        UpdateStudentRequestDto studentResp = studentServices.updateStudent(id, studentReq);
-        if(studentResp == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<UpdateStudentRequestDto> updateStudent(@RequestParam Long id,
+                                                                 @RequestBody UpdateStudentRequestDto studentReq) {
+
+        UpdateStudentRequestDto studentResp =
+                studentServices.updateStudent(id, studentReq);
+
         return ResponseEntity.ok(studentResp);
     }
 
@@ -71,14 +68,10 @@ public class StudentController {
 
     @DeleteMapping("/delete")
     public ResponseEntity <String > deleteStudent(@RequestParam Long id) {
+        studentServices.deleteStudent(id);
 
-        Boolean isDeleted =   studentServices.deleteStudent(id);
-
-        if(!isDeleted) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok("Record deleted");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT).build();
 
     }
 
@@ -86,13 +79,9 @@ public class StudentController {
 
     @PatchMapping("/delete-soft")
     public ResponseEntity <String > deleteStudentSoftly(@RequestParam Long id) {
-        Boolean isDeleted =   studentServices.deleteStudentSoftly(id);
+        studentServices.deleteStudentSoftly(id);
 
-        if(!isDeleted) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok("Record deleted softly");
+        return ResponseEntity.noContent().build();
     }
 
 }
